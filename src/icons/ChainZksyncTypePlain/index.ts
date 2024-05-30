@@ -1,0 +1,1 @@
+export { ChainZksyncTypePlain } from "./ChainZksyncTypePlain";

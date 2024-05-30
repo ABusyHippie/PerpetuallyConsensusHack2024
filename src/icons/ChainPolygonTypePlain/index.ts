@@ -1,0 +1,1 @@
+export { ChainPolygonTypePlain } from "./ChainPolygonTypePlain";
