@@ -6,7 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import { createThirdwebClient } from "thirdweb";
 import { ThirdwebProvider, ConnectButton } from "thirdweb/react";
 
-export const client = createThirdwebClient({ clientId: process.env.THIRD_WEB_CLIENT });
+export const client = createThirdwebClient({ clientId: process.env.REACT_APP_THIRD_WEB_CLIENT });
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
