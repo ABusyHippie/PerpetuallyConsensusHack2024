@@ -12,7 +12,9 @@ import { Bye1 } from "../../icons/Bye1";
 import { IconEdit1 } from "../../icons/IconEdit1";
 import { BusinessDeal1 } from "../../icons/BusinessDeal1";
 import { CryptowalletsShowing1 } from "../../icons/CryptowalletsShowing1";
-import { ConnectButton, useActiveAccount } from "thirdweb/react";
+import { ConnectButton, useActiveAccount, useSendTransaction } from "thirdweb/react";
+import { createThirdwebClient, getContract, resolveMethod, prepareContractCall } from "thirdweb";
+import { defineChain } from "thirdweb/chains";
 import { client } from "../..";
 import { ethereum } from "thirdweb/chains";
 import { getWalletBalance } from "thirdweb/wallets";
@@ -28,6 +30,8 @@ import {
     Label,
     Icon,
     Loader,
+    Message,
+    MessageHeader,
 } from 'semantic-ui-react'
 import BenificiaryForm from "../../components/beneficiaryform";
 import DeathSwitchForm from "../../components/deathswitchform";
@@ -46,6 +50,7 @@ export const Dashboard = (): JSX.Element => {
     const [open, setOpen] = React.useState(false)
     const [modelType, setModelType] = useState()
     const [loading, setLoading] = React.useState(false)
+    const [success, setSuccess] = React.useState(false)
     const [benefValues, setBenefValues] = useState({
         name: "",
         email: "",
@@ -53,9 +58,24 @@ export const Dashboard = (): JSX.Element => {
     })
     const [deathswitch, setDeathswitch] = useState([])
 
+    const somefunc = () => {
+        setSuccess(true)
+    }
     const addDeathSwitch = () => {
         setDeathswitch(deathswitchContent)
+        setTimeout(() => {
+            // somefunc()
+            call()
+        }, 10000)
     }
+
+
+    const deathSwitchSuccess = <Message positive>
+        <MessageHeader>Death Switch triggered</MessageHeader>
+        <p>
+            Funds has been transferred to the selected beneficiaries
+        </p>
+    </Message>
 
     const handleChange = name => e => {
         setBenefValues({ ...benefValues, [name]: e.target.value })
@@ -144,6 +164,38 @@ export const Dashboard = (): JSX.Element => {
         setLoading(false)
     }
 
+    const contract = getContract({
+        client,
+        chain: defineChain(1),
+        address: "0x2c962b86727445A321E0D48E616D73c862947C6c"
+    });
+
+    console.log(contract, "contract")
+
+    const { mutate: sendTransaction, isLoading, isError } = useSendTransaction();
+
+    const call = async () => {
+        if (isLoading) {
+            // do the loading
+        } else {
+            const transaction = await prepareContractCall({
+                contract,
+                method: resolveMethod("distribute()"),
+                params: []
+            });
+            console.log(transaction, "prepareContractCall")
+            try {
+                const res = await sendTransaction(transaction);
+                console.log(res)
+            } catch (err) {
+                console.log(err)
+            }
+
+            console.log(isError, "isError")
+            somefunc()
+        }
+    }
+
     return (
         <div className="" data-semantics-mode="dark">
             {modelComp}
@@ -162,6 +214,7 @@ export const Dashboard = (): JSX.Element => {
                     stateProp="enabled"
                 /> */}
             </div>
+            {success && deathSwitchSuccess}
             {/* <div className="flex flex-col w-[1128px] h-[236px] items-center justify-center p-4 absolute top-[616px] left-[156px] bg-[color:var(--semantics-highlight)] rounded-md overflow-hidden">
         <MobiusBackground className="!absolute !w-[1128px] !h-[236px] !top-0 !left-0" />
         <div className="flex flex-col items-start gap-2 relative self-stretch w-full flex-[0_0_auto]">
@@ -216,7 +269,7 @@ export const Dashboard = (): JSX.Element => {
                                     <div className="">1</div>
                                     <div>{death.name}</div>
                                     <div className="text-right"><Label color={death.active ? 'green' : 'red'} horizontal>
-                                        {death.active ? 'active' : 'inactive'}
+                                        {success ? 'executed' : death.active ? 'active' : 'inactive'}
                                     </Label></div>
                                 </div>
                             </div>
@@ -262,7 +315,8 @@ export const Dashboard = (): JSX.Element => {
                     <div className="relative flex-1 font-body-medium font-[number:var(--body-medium-font-weight)] text-semantics-muted-foreground text-[length:var(--body-medium-font-size)] tracking-[var(--body-medium-letter-spacing)] leading-[var(--body-medium-line-height)] [font-style:var(--body-medium-font-style)]">
                         Connected Wallets
                     </div>
-                    {!account?.address ? <ConnectButton client={client} /> : <button>Connect</button>}
+                    {/* {!account?.address ? <ConnectButton client={client} /> : <button>Connect</button>} */}
+                    <ConnectButton client={client} />
                     {/* <Button
                         className="!flex-[0_0_auto] !p-2"
                         icon={<IconPlus3 className="!relative !w-4 !h-4" color="#F5F5F4" />}
