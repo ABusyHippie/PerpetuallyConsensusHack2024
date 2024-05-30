@@ -166,7 +166,7 @@ export const Dashboard = (): JSX.Element => {
 
     const contract = getContract({
         client,
-        chain: defineChain(1),
+        chain: defineChain(31),
         address: "0x2c962b86727445A321E0D48E616D73c862947C6c"
     });
 
