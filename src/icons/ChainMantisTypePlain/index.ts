@@ -1,0 +1,1 @@
+export { ChainMantisTypePlain } from "./ChainMantisTypePlain";

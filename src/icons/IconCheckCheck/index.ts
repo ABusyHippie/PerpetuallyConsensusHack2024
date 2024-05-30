@@ -1,0 +1,1 @@
+export { IconCheckCheck } from "./IconCheckCheck";
