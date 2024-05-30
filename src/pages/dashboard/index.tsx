@@ -85,7 +85,7 @@ export const Dashboard = (): JSX.Element => {
         const balance = await getWalletBalance({
             account,
             client,
-            chain: ethereum,
+            chain: defineChain(31),
             address: account?.address
         });
         setBalance(balance)
