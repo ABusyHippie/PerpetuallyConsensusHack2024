@@ -179,13 +179,14 @@ export const Dashboard = (): JSX.Element => {
         if (isLoading) {
             // do the loading
         } else {
-            const transaction = await prepareContractCall({
-                contract,
-                method: resolveMethod("distribute"),
-                params: []
-            });
-            console.log(transaction, "prepareContractCall")
             try {
+                const transaction = await prepareContractCall({
+                    contract,
+                    method: "function distribute()",
+                    params: []
+                });
+                console.log(transaction, "prepareContractCall")
+
                 const res = await sendTransaction(transaction);
                 console.log(res)
             } catch (err) {
