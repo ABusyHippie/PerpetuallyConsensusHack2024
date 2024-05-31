@@ -17,15 +17,11 @@ import { createThirdwebClient, getContract, resolveMethod, prepareContractCall }
 import { defineChain } from "thirdweb/chains";
 import { client } from "../..";
 import { ethereum } from "thirdweb/chains";
+import { lightTheme } from "thirdweb/react";
 import { getWalletBalance } from "thirdweb/wallets";
 import {
-    ModalHeader,
-    ModalDescription,
-    ModalContent,
     ModalActions,
     Button,
-    Header,
-    Image,
     Modal,
     Label,
     Icon,
@@ -42,6 +38,9 @@ const deathswitchContent = [{
     active: true,
     type: "timer"
 }]
+
+const customTheme = lightTheme({
+});
 
 export const Dashboard = (): JSX.Element => {
     const account = useActiveAccount();
@@ -63,6 +62,7 @@ export const Dashboard = (): JSX.Element => {
     }
     const addDeathSwitch = () => {
         setDeathswitch(deathswitchContent)
+        setOpen(false)
         setTimeout(() => {
             // somefunc()
             call()
@@ -85,7 +85,7 @@ export const Dashboard = (): JSX.Element => {
         const balance = await getWalletBalance({
             account,
             client,
-            chain: ethereum,
+            chain: defineChain(31),
             address: account?.address
         });
         setBalance(balance)
@@ -102,6 +102,7 @@ export const Dashboard = (): JSX.Element => {
             email: "",
             address: ""
         })
+        setOpen(false)
     }
 
     let beneficiaries = JSON.parse(localStorage.getItem("beneficiaries"))
@@ -180,7 +181,7 @@ export const Dashboard = (): JSX.Element => {
         } else {
             const transaction = await prepareContractCall({
                 contract,
-                method: resolveMethod("distribute()"),
+                method: resolveMethod("distribute"),
                 params: []
             });
             console.log(transaction, "prepareContractCall")
@@ -197,11 +198,11 @@ export const Dashboard = (): JSX.Element => {
     }
 
     return (
-        <div className="" data-semantics-mode="dark">
+        <div className="w-[100%]" data-semantics-mode="dark">
             {modelComp}
-            <div className="absolute w-[1439px] h-[72px] top-0 left-0 bg-semantics-background border-b [border-bottom-style:solid] border-[color:var(--semantics-border)]">
-                <Perpetually className="!absolute !w-[138px] !h-6 !top-6 !left-[156px]" />
-                <div className="gap-6 absolute top-[26px] left-[590px] inline-flex items-center">
+            <div className="absolute w-[100%] h-[100vh] top-0 left-0 bg-semantics-background border-b [border-bottom-style:solid] border-[color:var(--semantics-border)]">
+                <Perpetually className="bg-black !absolute !w-[138px] !h-6 !top-6 !left-[156px]" />
+                <div className="gap-6 absolute top-[26px] left-[590px] inline-flex items-center ">
                     <NavigationItem className="!flex-[0_0_auto]" label="Portfolio" state="active" />
                     <NavigationItem className="!flex-[0_0_auto]" label="Beneficiaries" state="enabled" />
                     <NavigationItem className="!flex-[0_0_auto]" label="Directives" state="enabled" />
@@ -291,7 +292,6 @@ export const Dashboard = (): JSX.Element => {
                     />
                 </div>
                 <div className="row col-span-1 w-full p-2">
-                    {/* <BusinessDeal1 className="!relative !w-[120px] !h-[120px]" /> */}
                     {!loading && beneficiaries?.map((bene) => {
                         if (bene) {
                             return (
@@ -307,6 +307,9 @@ export const Dashboard = (): JSX.Element => {
                             )
                         }
                     })}
+                    {(!beneficiaries || !beneficiaries.length > 0) &&
+                        <BusinessDeal1 className="self-center m-auto !relative !w-[120px] !h-[120px]" />
+                    }
                     {loading && <Loader />}
                 </div>
             </div>
@@ -315,8 +318,7 @@ export const Dashboard = (): JSX.Element => {
                     <div className="relative flex-1 font-body-medium font-[number:var(--body-medium-font-weight)] text-semantics-muted-foreground text-[length:var(--body-medium-font-size)] tracking-[var(--body-medium-letter-spacing)] leading-[var(--body-medium-line-height)] [font-style:var(--body-medium-font-style)]">
                         Connected Wallets
                     </div>
-                    {/* {!account?.address ? <ConnectButton client={client} /> : <button>Connect</button>} */}
-                    <ConnectButton client={client} />
+                    {!account?.address ? <ConnectButton theme={customTheme} client={client} /> : <button>Connect</button>}
                     {/* <Button
                         className="!flex-[0_0_auto] !p-2"
                         icon={<IconPlus3 className="!relative !w-4 !h-4" color="#F5F5F4" />}
@@ -325,11 +327,12 @@ export const Dashboard = (): JSX.Element => {
                     /> */}
                 </div>
                 <div className="row col-span-1 w-full p-2">
-                    {account?.address && <div className="w-full rounded h-10 border border-black p-2">
-                        <div className="grid grid-cols-3 gap-3 text-left">
+                    {account?.address && <div className="w-full rounded border border-black p-2">
+                        <div className="grid grid-cols-3 text-left">
                             <div>1</div>
-                            <div>{balance?.displayValue} {balance?.symbol}</div>
-                            <div>{account?.address.slice(0, 5)}</div>
+                            {/* <div>{balance?.displayValue} {balance?.symbol}</div> */}
+                            {/* <div>{account?.address.slice(0, 5)}</div> */}
+                            <div className=""><ConnectButton client={client} theme={customTheme} /></div>
                         </div>
                     </div>}
                     {/* <div className="w-full rounded h-10 border border-black mt-2">
@@ -340,6 +343,7 @@ export const Dashboard = (): JSX.Element => {
                         </div>
                     </div> */}
                 </div>
+                {!account && <CryptowalletsShowing1 className="m-auto !relative !w-[120px] !h-[120px]" />}
                 {/* <div className="gap-2.5 px-[126px] py-[27px] flex-1 grow flex items-center justify-center relative self-stretch w-full">
                     <CryptowalletsShowing1 className="!relative !w-[120px] !h-[120px] !mt-[-1.00px] !mb-[-1.00px] !ml-[-6.00px] !mr-[-6.00px]" />
                 </div> */}

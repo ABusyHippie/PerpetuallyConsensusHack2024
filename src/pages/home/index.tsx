@@ -38,7 +38,7 @@ const Home: React.FC = () => {
                                     digital assets in any eventuality.
                                 </p>
                                 <div className="inline-flex items-center gap-2 relative flex-[0_0_auto]">
-                                    <button className="!flex-[0_0_auto]">Get Started Now</button>
+                                    <button onClick={() => window.location.href = "/dashboard"} className="!flex-[0_0_auto]">Get Started Now</button>
                                     {/* <ConnectButton client={client} /> */}
                                 </div>
                             </div>
