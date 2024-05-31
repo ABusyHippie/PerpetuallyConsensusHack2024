@@ -199,6 +199,7 @@ export const Dashboard = (): JSX.Element => {
         if (isLoading) {
             // do the loading
         } else {
+
             try {
                 const transaction = await prepareContractCall({
                     contract,
