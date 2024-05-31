@@ -28,6 +28,14 @@ import {
     Loader,
     Message,
     MessageHeader,
+    TableRow,
+    TableHeaderCell,
+    TableHeader,
+    TableCell,
+    TableBody,
+    Table,
+    Checkbox,
+    Radio,
 } from 'semantic-ui-react'
 import BenificiaryForm from "../../components/beneficiaryform";
 import DeathSwitchForm from "../../components/deathswitchform";
@@ -50,12 +58,14 @@ export const Dashboard = (): JSX.Element => {
     const [modelType, setModelType] = useState()
     const [loading, setLoading] = React.useState(false)
     const [success, setSuccess] = React.useState(false)
+    const [contracts, setContracts] = React.useState([])
     const [benefValues, setBenefValues] = useState({
         name: "",
         email: "",
         address: ""
     })
     const [deathswitch, setDeathswitch] = useState([])
+    // const [deathswitchrules, setDeathswitchrules] = useState([])
 
     const somefunc = () => {
         setSuccess(true)
@@ -63,6 +73,12 @@ export const Dashboard = (): JSX.Element => {
     const addDeathSwitch = () => {
         setDeathswitch(deathswitchContent)
         setOpen(false)
+    }
+
+    const addContract = () => {
+        setContracts([{
+            name: "Deathswitch1",
+        }])
         setTimeout(() => {
             // somefunc()
             call()
@@ -70,15 +86,11 @@ export const Dashboard = (): JSX.Element => {
     }
 
 
-    const deathSwitchSuccess = <Message positive>
-        <MessageHeader>Death Switch triggered</MessageHeader>
-        <p>
-            Funds has been transferred to the selected beneficiaries
-        </p>
-    </Message>
-
     const handleChange = name => e => {
         setBenefValues({ ...benefValues, [name]: e.target.value })
+    }
+    const handleChangeSwitch = name => e => {
+        // setDeathswitch({ ...deathswitch, [name]: e.target.value })
     }
     //@ts-nocheck
     const getBalance = async () => {
@@ -115,7 +127,7 @@ export const Dashboard = (): JSX.Element => {
         size="small"
     >
         {modelType === "beneficiary" && <BenificiaryForm handleChange={handleChange}> </BenificiaryForm>}
-        {modelType === "deathswitch" && <DeathSwitchForm handleChange={handleChange}> </DeathSwitchForm>}
+        {modelType === "deathswitch" && <DeathSwitchForm handleChange={handleChangeSwitch}> </DeathSwitchForm>}
         <ModalActions>
             <Button color='black' onClick={() => setOpen(false)}>
                 Nope
@@ -129,6 +141,14 @@ export const Dashboard = (): JSX.Element => {
             />
         </ModalActions>
     </Modal>
+
+    const deathSwitchSuccess = success && <div className="z-999"><Message onDismiss={() => setSuccess(false)} positive>
+        <MessageHeader>Death Switch triggered</MessageHeader>
+        <p>
+            Funds have been transferred to the following beneficiaries. {beneficiaries?.map((bene) => bene.name + ", ")}
+        </p>
+
+    </Message></div>
 
     useEffect(() => {
         account?.address && getBalance(account?.address)
@@ -239,20 +259,50 @@ export const Dashboard = (): JSX.Element => {
                             <TabItem className="!flex-[0_0_auto]" label="Directives" selected />
                             <TabItem className="!flex-[0_0_auto]" label="Beneficiaries" selected={false} />
                         </div>
-                        <Button showIcon className="!flex-[0_0_auto]" label="Add contract" stateProp="disabled" type="primary" />
+                        <Button className="!flex-[0_0_auto]" label="Publish Succession Plan" stateProp="disabled" type="primary" onClick={() => addContract()} />
                     </div>
                 </div>
-                <div className="flex-col h-[148px] gap-2 px-0 py-12 bg-[color:var(--semantics-card)] rounded-[var(--semantics-radius)] border border-solid border-[color:var(--semantics-border)] flex items-center justify-center relative self-stretch w-full">
-                    <SecurityVault1 className="!relative !w-20 !h-20 !mt-[-30.00px]" />
+                <div className="h-[148px] gap-2 bg-[color:var(--semantics-card)] rounded-[var(--semantics-radius)] border border-solid border-[color:var(--semantics-border)] p-2 relative self-stretch w-full">
+                    {/* <SecurityVault1 className="!relative !w-20 !h-20 !mt-[-30.00px]" />
                     <div className="relative w-fit mb-[-29.00px] font-body font-[number:var(--body-font-weight)] text-semantics-muted-foreground text-[length:var(--body-font-size)] tracking-[var(--body-letter-spacing)] leading-[var(--body-line-height)] whitespace-nowrap [font-style:var(--body-font-style)]">
                         No directives created yet
-                    </div>
+                    </div> */}
+                    <Table celled inverted selectable>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHeaderCell>Name</TableHeaderCell>
+                                <TableHeaderCell>Wallet Address</TableHeaderCell>
+                                <TableHeaderCell>Beneficiaries</TableHeaderCell>
+                                <TableHeaderCell>Status</TableHeaderCell>
+                            </TableRow>
+                        </TableHeader>
+
+                        <TableBody>
+                            {contracts?.map((contr) => {
+                                return (
+                                    <TableRow>
+                                        <TableCell>{contr?.name}</TableCell>
+                                        <TableCell>{account?.address}</TableCell>
+                                        <TableCell>{beneficiaries?.map((bene) => bene.name + ", ")}</TableCell>
+                                        <TableCell><Label color="green">{success ? 'executed' : 'active'}</Label></TableCell>
+                                    </TableRow>
+                                )
+                            })}
+                        </TableBody>
+                    </Table>
+                    {/* <div className="w-full rounded h-10 border border-black p-2">
+                        <div className="grid grid-cols-3 gap-1">
+                            <div className="">1</div>
+                            <div></div>
+                            <div className="text-right"></div>
+                        </div>
+                    </div> */}
                 </div>
             </div>
             <div className="flex flex-col w-[360px] h-[236px] items-start absolute top-[120px] left-[924px] bg-[color:var(--semantics-card)] rounded-md overflow-hidden border border-solid border-[color:var(--semantics-border)]">
                 <div className="flex items-center gap-4 p-4 relative self-stretch w-full flex-[0_0_auto] border-b [border-bottom-style:solid] border-[color:var(--semantics-border)]">
                     <div className="relative flex-1 font-body-medium font-[number:var(--body-medium-font-weight)] text-semantics-muted-foreground text-[length:var(--body-medium-font-size)] tracking-[var(--body-medium-letter-spacing)] leading-[var(--body-medium-line-height)] [font-style:var(--body-medium-font-style)]">
-                        Death Switch
+                        Death Switch Conditions
                     </div>
                     <Button
                         className="!flex-[0_0_auto] !p-2"
@@ -268,7 +318,7 @@ export const Dashboard = (): JSX.Element => {
                         return (
                             <div className="w-full rounded h-10 border border-black p-2">
                                 <div className="grid grid-cols-3 gap-1">
-                                    <div className="">1</div>
+                                    <div className=""><Radio /> 1</div>
                                     <div>{death.name}</div>
                                     <div className="text-right"><Label color={death.active ? 'green' : 'red'} horizontal>
                                         {success ? 'executed' : death.active ? 'active' : 'inactive'}
@@ -296,9 +346,9 @@ export const Dashboard = (): JSX.Element => {
                     {!loading && beneficiaries?.map((bene) => {
                         if (bene) {
                             return (
-                                <div className="w-full rounded h-10 border border-black p-2">
+                                <div className="w-full rounded h-10 border border-black p-2 mb-2">
                                     <div className="grid grid-cols-5 gap-1 relative">
-                                        <div className="">1</div>
+                                        <div className=""><Checkbox className="" />  1</div>
                                         <div>{bene?.name}</div>
                                         <div>{bene?.email}</div>
                                         <div onClick={() => removeItemFromLocalStorage(bene?.name)} className="absolute float-right right-0"><Icon name="cancel" color="red">
@@ -319,7 +369,8 @@ export const Dashboard = (): JSX.Element => {
                     <div className="relative flex-1 font-body-medium font-[number:var(--body-medium-font-weight)] text-semantics-muted-foreground text-[length:var(--body-medium-font-size)] tracking-[var(--body-medium-letter-spacing)] leading-[var(--body-medium-line-height)] [font-style:var(--body-medium-font-style)]">
                         Connected Wallets
                     </div>
-                    {!account?.address ? <ConnectButton theme={customTheme} client={client} /> : <button>Connect</button>}
+                    {/* {!account?.address ? <ConnectButton theme={customTheme} client={client} /> : <button>Connect</button>} */}
+                    <ConnectButton theme={customTheme} client={client} />
                     {/* <Button
                         className="!flex-[0_0_auto] !p-2"
                         icon={<IconPlus3 className="!relative !w-4 !h-4" color="#F5F5F4" />}
@@ -330,10 +381,10 @@ export const Dashboard = (): JSX.Element => {
                 <div className="row col-span-1 w-full p-2">
                     {account?.address && <div className="w-full rounded border border-black p-2">
                         <div className="grid grid-cols-3 text-left">
-                            <div>1</div>
-                            {/* <div>{balance?.displayValue} {balance?.symbol}</div> */}
-                            {/* <div>{account?.address.slice(0, 5)}</div> */}
-                            <div className=""><ConnectButton client={client} theme={customTheme} /></div>
+                            <div><Radio className="" /> 1</div>
+                            <div>{balance?.displayValue} {balance?.symbol}</div>
+                            <div>{account?.address.slice(0, 5)}</div>
+                            {/* <div className=""><ConnectButton client={client} theme={customTheme} /></div> */}
                         </div>
                     </div>}
                     {/* <div className="w-full rounded h-10 border border-black mt-2">
