@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React from 'react';
+import { Button } from 'semantic-ui-react';
 import { createThirdwebClient } from 'thirdweb';
 import { ConnectButton } from "thirdweb/react";
 // import { Button } from '../../components/common/Button';
@@ -16,7 +17,7 @@ const Home: React.FC = () => {
     return (
         <div className="text-center">
             <div className="w-full h-[100vh] bg-semantics-background">
-                <div className="relative h-[900px] bg-[url(/static/img/mobius-background.svg)] bg-[100%_100%]">
+                <div className="relative h-[100vh] bg-[url(/static/img/mobius-background.svg)] bg-[100%_100%]">
                     {/* <div className="absolute w-[1440px] h-[72px] top-0 left-0"> */}
                     {/* <div className="inline-flex items-start absolute top-[18px] left-[442px]">
                             <NavigationMenuItem className="!flex-[0_0_auto]" label="How it works" state="enabled" />
@@ -26,7 +27,7 @@ const Home: React.FC = () => {
                         </div> */}
                     {/* <Perpetually1 className="!absolute !w-[138px] !h-6 !top-6 !left-12" /> */}
                     {/* </div> */}
-                    <div className="inline-flex flex-col items-center gap-12 absolute top-[268px] left-[234px]">
+                    <div className="inline-flex flex-col items-center gap-12 absolute top-[170px] left-[254px]">
                         <p className="relative w-[973px] mt-[-1.00px] [font-family:'Radley',Helvetica] font-normal text-[color:var(--semantics-foreground)] text-[80px] text-center tracking-[-0.96px] leading-[80px]">
                             <span className="tracking-[-0.77px]">Transfer your crypto to your beneficiaries when you die. </span>
                             <span className="italic tracking-[-0.77px]">100% non-custodial.</span>
@@ -38,7 +39,7 @@ const Home: React.FC = () => {
                                     digital assets in any eventuality.
                                 </p>
                                 <div className="inline-flex items-center gap-2 relative flex-[0_0_auto]">
-                                    <button onClick={() => window.location.href = "/dashboard"} className="!flex-[0_0_auto]">Get Started Now</button>
+                                    <Button color='blue' onClick={() => window.location.href = "/dashboard"} className="!flex-[0_0_auto]">Get Started Now</Button>
                                     {/* <ConnectButton client={client} /> */}
                                 </div>
                             </div>

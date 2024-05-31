@@ -17,6 +17,17 @@ const benef = [{
     text: "ahmerpatel123@gmail.com"
 }]
 
+const distribute = [{
+    key: "1",
+    value: "50",
+    text: "Evenly"
+},
+{
+    key: "2",
+    value: "50",
+    text: "Individually"
+}]
+
 
 const types = [{
     key: "1",
@@ -35,8 +46,12 @@ const DeathSwitchForm: FC<IProps> = ({ handleChange }) => {
     return (
         <div>
             <div className='p-5 gap-3'>
-                <Header>Death Switch Rules</Header>
+                <Header>Death Switch Condition</Header>
                 <Form >
+                    <FormField>
+                        <label>Name</label>
+                        <Input type='ext' onChange={handleChange('name')} />
+                    </FormField>
                     <FormField>
                         <label>Select Beneficiaries</label>
                         <Dropdown
@@ -66,6 +81,17 @@ const DeathSwitchForm: FC<IProps> = ({ handleChange }) => {
                         <label>Select Idle Time</label>
                         <TimeSelector />
                     </FormField>}
+                    <FormField>
+                        <label>Select Distribution</label>
+                        <Dropdown
+                            placeholder='Distribute'
+                            fluid
+                            multiple
+                            search
+                            selection
+                            options={distribute}
+                        />
+                    </FormField>
                 </Form>
             </div>
         </div>
